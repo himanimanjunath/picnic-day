@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Polyline, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Marker} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import RoutingMachine from "./components/RoutingMachine";
 
 //for the drag option in the itinerary section 
 //DndContext wraps everything that supports dragging and closestCenter decides which item you’re dragging 
@@ -24,13 +25,43 @@ type Event = {
   name: string;
   lat: number;
   lng: number;
+  time: string;
+  location: string;
 };
 
 const EVENTS: Event[] = [
-  { id: 1, name: "Opening Ceremony", lat: 38.5382, lng: -121.7617 },
-  { id: 2, name: "Engineering Expo", lat: 38.5405, lng: -121.7496 },
-  { id: 3, name: "Animal Science Demo", lat: 38.5396, lng: -121.7544 },
-  { id: 4, name: "Chemistry Magic Show", lat: 38.5369, lng: -121.7589 },
+  {
+    id: 1,
+    name: "Opening Ceremony",
+    lat: 38.5382,
+    lng: -121.7617,
+    time: "9:00 – 9:45 AM",
+    location: "Quad Stage",
+  },
+  {
+    id: 2,
+    name: "Engineering Expo",
+    lat: 38.5405,
+    lng: -121.7496,
+    time: "10:00 AM – 2:00 PM",
+    location: "Kemper Hall",
+  },
+  {
+    id: 3,
+    name: "Animal Science Demo",
+    lat: 38.5396,
+    lng: -121.7544,
+    time: "11:00 – 11:30 AM",
+    location: "Hoover Barn",
+  },
+  {
+    id: 4,
+    name: "Chemistry Magic Show",
+    lat: 38.5369,
+    lng: -121.7589,
+    time: "1:00 – 1:45 PM",
+    location: "Chemistry Annex",
+  },
 ];
 
 const COLORS = [
@@ -88,10 +119,20 @@ function SortableItem({ event, index }: { event: Event; index: number }) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <strong>{index + 1}.</strong> {event.name}
+      <div>
+        <strong>{index + 1}. {event.name}</strong>
+        <div style={{ fontSize: "13px", color: "#555", marginTop: "4px" }}>
+          {event.time} • {event.location}
+        </div>
+      </div>
     </div>
   );
 }
+
+const UC_DAVIS_BOUNDS: [[number, number], [number, number]] = [
+  [38.531, -121.775], // southwest
+  [38.548, -121.745], // northeast
+];
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -141,10 +182,14 @@ export default function App() {
 
         <div className="map">
           <MapContainer
-            center={[38.5382, -121.7617]}
-            zoom={15}
-            style={{ height: "100%", width: "100%" }}
-          >
+          center={[38.5382, -121.7617]}
+          zoom={15}
+          minZoom={14}
+          maxZoom={18}
+          maxBounds={UC_DAVIS_BOUNDS}
+          maxBoundsViscosity={1.0}
+          style={{ height: "100%", width: "100%" }}
+        >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
             {itinerary.map((event, index) => (
@@ -155,17 +200,9 @@ export default function App() {
               />
             ))}
 
-            {itinerary.length > 1 &&
-              itinerary.slice(1).map((event, index) => (
-                <Polyline
-                  key={event.id}
-                  positions={[
-                    [itinerary[index].lat, itinerary[index].lng],
-                    [event.lat, event.lng],
-                  ]}
-                  color="#2563eb"
-                />
-              ))}
+            <RoutingMachine
+              points={itinerary.map(e => ({ lat: e.lat, lng: e.lng }))}
+            />
           </MapContainer>
         </div>
       </div>

@@ -2,6 +2,8 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+
 
 //L is used to create maps, markers, icons, etc
 import L from "leaflet";
