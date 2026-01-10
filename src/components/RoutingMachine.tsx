@@ -36,9 +36,15 @@ export default function RoutingMachine({ points }: Props) {
         show: false,
 
         lineOptions: {
-            styles: [{ weight: 5, color: "#2563eb" }]
-        }
-        }).addTo(map);
+        styles: [
+          {
+            color: "#2563eb",
+            weight: 5,
+            opacity: 0.9,
+          },
+        ],
+        },
+      }).addTo(map);
 
     /* OSRM router
     const routingControl = L.Routing.control({
