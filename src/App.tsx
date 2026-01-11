@@ -194,7 +194,7 @@ export default function App() {
   saveItinerary(itinerary);
   }, [itinerary]);
 
-  //export
+  //pdf
   const exportPDF = async () => {
   if (!mapRef.current || itinerary.length === 0) return;
 
@@ -207,7 +207,7 @@ export default function App() {
   const marginX = 16;
   let y = 18;
 
-  /* ---------- TITLE ---------- */
+  /* pdf title */
 
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
@@ -215,7 +215,7 @@ export default function App() {
 
   y += 10;
 
-  /* ---------- MAP (WITH ROUTES) ---------- */
+  /* map with routes */
 
   const mapCanvas = await html2canvas(mapRef.current, {
     useCORS: true,
@@ -237,7 +237,7 @@ export default function App() {
 
   y += mapHeight + 10;
 
-  /* ---------- WALKING ROUTE (SAME PAGE IF POSSIBLE) ---------- */
+  /* walking route */
 
   pdf.setFontSize(14);
   pdf.setFont("helvetica", "bold");
@@ -280,7 +280,7 @@ export default function App() {
     y += 8;
   });
 
-  /* ---------- SAVE ---------- */
+  /* saving the pdf */
 
   pdf.save("picnic-day-itinerary.pdf");
 };

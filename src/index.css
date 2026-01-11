@@ -39,6 +39,12 @@ body {
   min-width: 320px;
 }
 
+/* Remove ALL Leaflet Routing UI artifacts */
+.leaflet-routing-container,
+.leaflet-routing-alternatives-container,
+.leaflet-routing-collapse-btn {
+  display: none !important;
+}
 
 h1 {
   font-size: 3.2em;
